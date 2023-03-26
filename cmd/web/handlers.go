@@ -4,6 +4,7 @@ import (
   "log"
   "fmt"
   "net/http"
+  "html/template"
   "strconv"
 )
 func home(w http.ResponseWriter, r *http.Request) {
@@ -12,9 +13,22 @@ func home(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  _, err := w.Write([]byte("Hello from Snippetbox"))
+  files := []string{
+    "./ui/html/base.template.html",
+    "./ui/html/pages/home.template.html",
+    "./ui/html/partials/nav.template.html",
+  }
+
+  template_set, err := template.ParseFiles(files...)
   if err != nil {
-    log.Print(err)
+    log.Print(err.Error())
+    http.Error(w, "Internal Server Error", 500)
+  }
+
+  err = template_set.ExecuteTemplate(w, "base", nil)
+  if err != nil {
+    log.Print(err.Error())
+    http.Error(w, "Internal Server Error", 500)
   }
 }
 
@@ -37,7 +51,7 @@ func snippetCreate(w http.ResponseWriter, r *http.Request) {
 
   _, err := w.Write([]byte("Create a new snippet..."))
   if err != nil {
-    log.Print(err)
+    log.Print(err.Error())
   }
 }
 
