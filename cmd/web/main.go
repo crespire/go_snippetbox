@@ -7,11 +7,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"snippets.crespire.dev/internal/models"
 )
 
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -31,6 +33,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	// We use &http.Server because we want to look up
